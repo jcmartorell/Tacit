@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tacit — Sphere debugger (slides fork)</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        background: #18232e;
+        font-family: "DM Sans", system-ui, sans-serif;
+        color: #f4efe6;
+        overflow: hidden;
+        transition: background 0.25s ease, color 0.25s ease;
+      }
+      body.surface-sand {
+        background: #f4efe6;
+        color: #18232e;
+      }
+      #viewport {
+        position: fixed;
+        inset: 0;
+      }
+      #viewport canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+        cursor: grab;
+        touch-action: none;
+      }
+      #viewport canvas.is-dragging {
+        cursor: grabbing;
+      }
+      #controls {
+        position: fixed;
+        left: 16px;
+        bottom: 16px;
+        z-index: 2;
+        display: grid;
+        gap: 10px;
+        padding: 14px 16px;
+        border-radius: 14px;
+        background: rgb(24 35 46 / 82%);
+        border: 1px solid rgba(244, 239, 230, 0.14);
+        backdrop-filter: blur(10px);
+        min-width: 320px;
+        max-width: 360px;
+        font-size: 13px;
+        color: #f4efe6;
+        transition: background 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+      }
+      body.surface-sand #controls {
+        background: rgb(244 239 230 / 90%);
+        border-color: rgba(24, 35, 46, 0.12);
+        color: #18232e;
+      }
+      body.surface-sand #controls label {
+        color: #6b7a86;
+      }
+      body.surface-sand #controls label .row {
+        color: #18232e;
+      }
+      body.surface-sand #controls select,
+      body.surface-sand #controls button,
+      body.surface-sand #controls input[type="number"] {
+        background: #f4efe6;
+        color: #18232e;
+        border-color: rgba(24, 35, 46, 0.18);
+      }
+      body.surface-sand #meta {
+        color: #1a9e78;
+      }
+      #controls label {
+        display: grid;
+        gap: 6px;
+        color: #8a9ba8;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        font-size: 11px;
+      }
+      #controls label .row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        text-transform: none;
+        letter-spacing: 0;
+        color: #f4efe6;
+        font-size: 12px;
+        font-family: ui-monospace, monospace;
+      }
+      #controls select,
+      #controls input[type="range"],
+      #controls button {
+        width: 100%;
+      }
+      #controls select,
+      #controls button,
+      #controls input[type="number"] {
+        padding: 8px 10px;
+        border-radius: 8px;
+        border: 1px solid rgba(244, 239, 230, 0.2);
+        background: #18232e;
+        color: #f4efe6;
+        font: inherit;
+      }
+      #controls input[type="number"] {
+        width: 100%;
+        box-sizing: border-box;
+        font-family: ui-monospace, monospace;
+        font-size: 13px;
+      }
+      #controls .check-list {
+        display: grid;
+        gap: 6px;
+      }
+      #controls .check-list > span {
+        color: #8a9ba8;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        font-size: 11px;
+      }
+      body.surface-sand #controls .check-list > span {
+        color: #6b7a86;
+      }
+      #controls label.check {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-transform: none;
+        letter-spacing: 0;
+        color: #f4efe6;
+        font-size: 13px;
+        cursor: pointer;
+      }
+      #controls label.check input {
+        width: auto;
+        accent-color: #1a9e78;
+      }
+      #controls .inline-toggle {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        align-items: center;
+        gap: 10px;
+        text-transform: none;
+        letter-spacing: 0;
+        color: #f4efe6;
+        font-size: 13px;
+      }
+      #controls .inline-toggle.is-off {
+        opacity: 0.45;
+      }
+      #controls .inline-toggle .check {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        white-space: nowrap;
+        text-transform: none;
+        letter-spacing: 0;
+        font-size: 13px;
+        color: inherit;
+      }
+      #controls .inline-toggle input[type="checkbox"] {
+        width: auto;
+        accent-color: #1a9e78;
+      }
+      #controls .inline-toggle input[type="range"] {
+        width: 100%;
+        min-width: 0;
+      }
+      #controls .inline-toggle input[type="range"]:disabled {
+        opacity: 0.45;
+        pointer-events: none;
+      }
+      #controls .inline-toggle .qty {
+        font-family: ui-monospace, monospace;
+        font-size: 12px;
+        min-width: 2.2ch;
+        text-align: right;
+      }
+      body.surface-sand #controls .inline-toggle,
+      body.surface-sand #controls .inline-toggle .check,
+      body.surface-sand #controls label.check {
+        color: #18232e;
+      }
+      #controls button {
+        cursor: pointer;
+        font: inherit;
+        letter-spacing: 0.02em;
+      }
+      #controls button:hover {
+        border-color: rgba(26, 158, 120, 0.55);
+        color: #1a9e78;
+      }
+      #controls button[aria-pressed="true"] {
+        border-color: rgba(26, 158, 120, 0.7);
+        color: #1a9e78;
+      }
+      #meta {
+        font-family: ui-monospace, monospace;
+        font-size: 11px;
+        color: #1a9e78;
+        line-height: 1.4;
+      }
+      #meta.error {
+        color: #c26256;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="viewport"><canvas id="canvas"></canvas></div>
+    <div id="controls">
+      <button type="button" id="pauseLive" aria-pressed="false">Pause</button>
+      <label>
+        Preset (forces stage)
+        <select id="preset">
+          <option value="0.85">exploded · 0.85</option>
+          <option value="1.90" selected>ordered · 1.90</option>
+          <option value="3.05">domains · 3.05</option>
+          <option value="3.92">linked · 3.92</option>
+          <option value="4.85">dayzero · 4.85</option>
+          <option value="5.80">longitudes · 5.80</option>
+          <option value="6.55">exploded_segments · 6.55</option>
+          <option value="7.55">longitudes2 · 7.55</option>
+          <option value="custom">custom · scrub freely</option>
+        </select>
+      </label>
+      <div class="check-list">
+        <span>Overlay</span>
+        <div class="inline-toggle is-off" id="meteorWrap">
+          <label class="check" for="overlayMeteors">
+            <input id="overlayMeteors" type="checkbox" />
+            Meteors
+          </label>
+          <input id="meteorDensity" type="range" min="1" max="4" step="1" value="2" disabled />
+          <span class="qty" id="meteorDensityVal">2×</span>
+        </div>
+        <label class="check">
+          <input id="overlayConnections" type="checkbox" />
+          Connections
+        </label>
+        <div class="inline-toggle is-off" id="agentWrap">
+          <label class="check" for="overlayAgents">
+            <input id="overlayAgents" type="checkbox" />
+            Agents
+          </label>
+          <input id="satellites" type="range" min="4" max="30" step="1" value="28" disabled />
+          <span class="qty" id="satVal">28</span>
+        </div>
+      </div>
+      <div class="inline-toggle" id="labelDensityWrap">
+        <label class="check" for="showLabels">
+          <input id="showLabels" type="checkbox" checked />
+          Labels
+        </label>
+        <input id="labelDensity" type="range" min="1" max="4" step="1" value="2" />
+        <span class="qty" id="labelDensityVal">2×</span>
+      </div>
+      <label>
+        <span class="row">Stage <span id="stageVal">1.90</span></span>
+        <input id="stageSlider" type="range" min="0" max="8" step="0.01" value="1.90" />
+      </label>
+      <div class="inline-toggle" id="animateWrap">
+        <label class="check" for="animateTransitions">
+          <input id="animateTransitions" type="checkbox" checked />
+          Animate
+        </label>
+        <input id="duration" type="range" min="0.2" max="4" step="0.1" value="1.4" />
+        <span class="qty" id="durationVal">1.4s</span>
+      </div>
+      <button type="button" id="playSeq" aria-pressed="false">Play sequence</button>
+      <label class="check">
+        <input id="autoRotate" type="checkbox" checked />
+        Automatic rotation
+      </label>
+      <label class="check">
+        <input id="sandSurface" type="checkbox" />
+        Sand ground (light)
+      </label>
+      <label>
+        <span class="row">Brightness <span id="brightVal">1.35×</span></span>
+        <input id="bright" type="range" min="0.8" max="2.2" step="0.05" value="1.35" />
+      </label>
+      <label>
+        Particles
+        <input id="particles" type="number" min="800" max="5000" step="100" value="3500" />
+      </label>
+      <div id="meta">live frame() · slides fork</div>
+    </div>
+    <script type="module" src="/src/sphere-preview-slides.ts"></script>
+  </body>
+</html>

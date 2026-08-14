@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tacit — Longitude grid study</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        background: #000;
+        overflow: hidden;
+      }
+      canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="c"></canvas>
+    <script>
+      /**
+       * Quantized lat/long particle sphere (study — not the live instrument).
+       * Defaults fill the spec gaps from the completeness review.
+       *
+       *   r            silhouette ≈ 0.40 × min(w,h)
+       *   meridians    96 × 56 lats, −85°…+85°
+       *   accent       m % 6 === 0
+       *   color        8% of points, independent of accent
+       *   near-white   #f4f4f4–#ffffff
+       *   rotation     0.036 rad/s (frame-rate independent)
+       *   projection   cam (0,0,−1400), +z toward viewer, Y-up
+       *   random       once at init
+       */
+      const FOCAL = 900;
+      const CAM_Z = -1400;
+      const MERIDIANS = 96;
+      const LATS = 56;
+      const LAT_MIN = (-85 * Math.PI) / 180;
+      const LAT_MAX = (85 * Math.PI) / 180;
+      const LAT_STEP = (LAT_MAX - LAT_MIN) / (LATS - 1);
+      const LON_STEP = (Math.PI * 2) / MERIDIANS;
+      const ROT_SPEED = 0.036;
+      const SILHOUETTE = 0.4;
+      const PALETTE = [
+        [192, 57, 43],
+        [46, 95, 163],
+        [217, 165, 32],
+        [47, 143, 127],
+        [108, 92, 231],
+        [138, 122, 61],
+        [181, 101, 29],
+      ];
+      const canvas = document.getElementById("c");
+      const ctx = canvas.getContext("2d", { alpha: false });
+
+      const reduceMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
+
+      const rand = () => Math.random();
+      const lerp = (a, b, t) => a + (b - a) * t;
+      const clamp01 = (t) => Math.max(0, Math.min(1, t));
+
+      /** Weighted 1–4, biased small: mix of two uniforms pulled low. */
+      function baseSize() {
+        const t = rand() * rand();
+        return 1 + t * 3;
+      }
+
+      function nearWhite() {
+        const v = 244 + Math.floor(rand() * 12);
+        return [v, v, v];
+      }
+
+      /**
+       * World radius so the projected silhouette at z=0 is SILHOUETTE × min(w,h).
+       * scale_at_origin = FOCAL / (0 − CAM_Z) = 900/1400
+       */
+      function worldRadius(cssW, cssH) {
+        const sil = SILHOUETTE * Math.min(cssW, cssH);
+        return sil * ((0 - CAM_Z) / FOCAL);
+      }
+
+      function buildPoints() {
+        const pts = [];
+        for (let m = 0; m < MERIDIANS; m++) {
+          const lon0 = m * LON_STEP;
+          const accent = m % 6 === 0;
+          for (let i = 0; i < LATS; i++) {
+            const lat0 = LAT_MIN + i * LAT_STEP;
+            const lat = lat0 + (rand() * 2 - 1) * 0.35 * LAT_STEP;
+            const lon = lon0 + (rand() * 2 - 1) * 0.15 * LON_STEP;
+            const radJ = 1 + (rand() * 2 - 1) * 0.02;
+            const clat = Math.cos(lat);
+            const colored = rand() < 0.08;
+            const rgb = colored
+              ? PALETTE[(rand() * PALETTE.length) | 0]
+              : nearWhite();
+            pts.push({
+              x: radJ * clat * Math.cos(lon),
+              y: radJ * Math.sin(lat),
+              z: radJ * clat * Math.sin(lon),
+              meridian: m,
+              latIndex: i,
+              accent,
+              colored,
+              rgb,
+              baseSize: baseSize(),
+              connect: i < LATS - 1 && rand() < 0.03,
+            });
+          }
+        }
+        return pts;
+      }
+
+      const points = buildPoints();
+      /** Next point on the same meridian (original lat index, no wrap). */
+      const nextOnMeridian = new Array(points.length);
+      for (let i = 0; i < points.length; i++) {
+        const p = points[i];
+        nextOnMeridian[i] = p.connect ? i + 1 : -1;
+      }
+
+      let cssW = 1;
+      let cssH = 1;
+      let dpr = 1;
+      let R = 420;
+      let rot = 0.35;
+      let last = performance.now();
+      let hidden = document.hidden;
+
+      document.addEventListener("visibilitychange", () => {
+        hidden = document.hidden;
+        last = performance.now();
+      });
+
+      function resize() {
+        cssW = Math.max(1, window.innerWidth);
+        cssH = Math.max(1, window.innerHeight);
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
+        canvas.width = Math.floor(cssW * dpr);
+        canvas.height = Math.floor(cssH * dpr);
+        canvas.style.width = cssW + "px";
+        canvas.style.height = cssH + "px";
+        R = worldRadius(cssW, cssH);
+      }
+
+      function project(x, y, z, cosY, sinY) {
+        const xr = x * cosY - z * sinY;
+        const zr = x * sinY + z * cosY;
+        const depth = zr - CAM_Z;
+        const scale = FOCAL / depth;
+        return {
+          sx: cssW * 0.5 + xr * scale,
+          sy: cssH * 0.5 - y * scale,
+          z: zr,
+        };
+      }
+
+      const projected = new Array(points.length);
+
+      function frame(now) {
+        if (hidden) {
+          requestAnimationFrame(frame);
+          return;
+        }
+        const dt = Math.min(0.05, (now - last) / 1000);
+        last = now;
+        if (!reduceMotion) rot += ROT_SPEED * dt;
+
+        const cosY = Math.cos(rot);
+        const sinY = Math.sin(rot);
+
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        ctx.fillStyle = "#000";
+        ctx.fillRect(0, 0, cssW, cssH);
+
+        for (let i = 0; i < points.length; i++) {
+          const p = points[i];
+          projected[i] = project(p.x * R, p.y * R, p.z * R, cosY, sinY);
+        }
+
+        const order = projected.map((_, i) => i);
+        order.sort((a, b) => projected[a].z - projected[b].z);
+
+        for (const i of order) {
+          const p = points[i];
+          const a = projected[i];
+          const depth = clamp01((a.z + R) / (2 * R));
+          let alpha = lerp(0.18, 1, depth);
+          let size = p.baseSize * lerp(0.18, 1, depth);
+          if (p.accent) size += 1;
+          if (p.colored) {
+            size += 1;
+            alpha = Math.min(1, alpha + 0.12);
+          }
+          size = Math.max(1, Math.round(size));
+
+          const ni = nextOnMeridian[i];
+          if (ni >= 0) {
+            const b = projected[ni];
+            const dx = b.sx - a.sx;
+            const dy = b.sy - a.sy;
+            if (dx * dx + dy * dy <= 40 * 40) {
+              const q = points[ni];
+              if (p.colored || q.colored) {
+                const rgb = p.colored ? p.rgb : q.rgb;
+                ctx.strokeStyle = `rgba(${rgb[0]},${rgb[1]},${rgb[2]},0.2)`;
+              } else {
+                ctx.strokeStyle = "rgba(255,255,255,0.12)";
+              }
+              ctx.lineWidth = 1;
+              ctx.beginPath();
+              ctx.moveTo(a.sx, a.sy);
+              ctx.lineTo(b.sx, b.sy);
+              ctx.stroke();
+            }
+          }
+
+          const [r, g, b] = p.rgb;
+          ctx.fillStyle = `rgba(${r},${g},${b},${alpha})`;
+          ctx.fillRect(
+            Math.round(a.sx - size / 2),
+            Math.round(a.sy - size / 2),
+            size,
+            size,
+          );
+        }
+
+        requestAnimationFrame(frame);
+      }
+
+      window.addEventListener("resize", resize);
+      resize();
+      last = performance.now();
+      requestAnimationFrame(frame);
+    </script>
+  </body>
+</html>
