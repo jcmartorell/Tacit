@@ -178,6 +178,11 @@ export const aiLayer = {
         body: "Domains, links, and exceptions agents can navigate, not a flat dump of stale docs.",
       },
       {
+        icon: "delegate",
+        title: "Delegate the right things",
+        body: "Routine lookups and known playbook steps go to the agent. Ambiguous calls stay with people.",
+      },
+      {
         icon: "hitl",
         title: "Human-in-the-loop, by design",
         body: "Tacit doesn't replace your team. It gives agents context so humans keep control of the decisions that matter.",

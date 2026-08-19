@@ -818,8 +818,8 @@ export const STORY_BEATS: StoryBeat[] = [
   {
     min: 1.15,
     max: 2.15,
-    title: "Delegate the right things.",
-    body: "Routine lookups and known playbook steps go to the agent. Ambiguous calls stay with people.",
+    title: "Judgment proved in the field.",
+    body: "Not mission statements. Client negotiation, workflow shortcuts, and the reasoning behind decisions.",
   },
   {
     min: 2.15,
