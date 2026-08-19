@@ -19,6 +19,24 @@ function particleBudget() {
   return 4200;
 }
 
+function TitleWithHighlight({
+  title,
+  highlight,
+}: {
+  title: string;
+  highlight?: string;
+}) {
+  if (!highlight || !title.includes(highlight)) return title;
+  const [before, after] = title.split(highlight);
+  return (
+    <>
+      {before}
+      <em className="hl">{highlight}</em>
+      {after}
+    </>
+  );
+}
+
 function isTypingTarget(el: EventTarget | null) {
   if (!(el instanceof HTMLElement)) return false;
   const tag = el.tagName;
@@ -226,7 +244,12 @@ export function KnowledgeSphere() {
             key={shownBeat.title}
             className={`instrument-copy-swap is-${textPhase}`}
           >
-            <h1 className="instrument-title">{shownBeat.title}</h1>
+            <h1 className="instrument-title">
+              <TitleWithHighlight
+                title={shownBeat.title}
+                highlight={shownBeat.highlight}
+              />
+            </h1>
             <p className="instrument-body">{shownBeat.body}</p>
             {showHeroCta && (
               <div className="instrument-cta">

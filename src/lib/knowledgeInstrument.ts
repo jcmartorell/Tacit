@@ -806,6 +806,7 @@ export type StoryBeat = {
   max: number;
   title: string;
   body: string;
+  highlight?: string;
 };
 
 export const STORY_BEATS: StoryBeat[] = [
@@ -818,8 +819,9 @@ export const STORY_BEATS: StoryBeat[] = [
   {
     min: 1.15,
     max: 2.15,
-    title: "Judgment proved in the field.",
-    body: "Not mission statements. Client negotiation, workflow shortcuts, and the reasoning behind decisions.",
+    title: "A judgment layer for AI agents and employees.",
+    highlight: "judgment layer",
+    body: "The end goal is to build the judgment layer both AI agents and employees use — how work actually gets decided, not only what's written down. Tacit captures that unwritten know-how so people and agents can act with the same operational judgment.",
   },
   {
     min: 2.15,

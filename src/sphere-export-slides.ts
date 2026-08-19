@@ -49,7 +49,7 @@ const FRAMES: FrameSpec[] = [
   { id: "exploded", label: "Fig. — Scattered know-how", mode: "stage", stage: 0.85 },
   { id: "exploded-wide", label: "Fig. — Scattered know-how 16:9", mode: "stage", stage: 0.85, wide: true },
   { id: "exploded-labeled", label: "Fig. — Scattered + KO labels", mode: "labeled", stage: 0.85, wide: true, count: 11 },
-  { id: "ordered", label: "Fig. — Judgment proved in the field", mode: "stage", stage: 1.9 },
+  { id: "ordered", label: "Fig. — A judgment layer", mode: "stage", stage: 1.9 },
   { id: "meridians", label: "Fig. — Ordered shell / meridians", mode: "meridians" },
   { id: "meteors", label: "Fig. — Capture meteors", mode: "meteors" },
   { id: "domains", label: "Fig. — Domains / segments", mode: "stage", stage: 3.1 },
