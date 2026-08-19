@@ -1,0 +1,24 @@
+:root {
+  --pulse: #1a9e78;
+  --pulse-tint: #ebf7f3;
+  --pulse-deep: #147a5c;
+  --ink: #18232e;
+  --ink-soft: #1e2c3a;
+  /* Secondary text on Sand — WCAG AA vs --sand (~4.6:1) */
+  --ink-muted: #4d5d6a;
+  --sand: #f4efe6;
+  --sand-deep: #ebe4d8;
+  /* Decorative / borders only — not body copy on Sand */
+  --mist: #8a9ba8;
+  --white: #ffffff;
+  --border: #e8edf0;
+  --border-warm: #ddd6cc;
+
+  --font-serif: "Instrument Serif", Georgia, serif;
+  --font-sans: "DM Sans", system-ui, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, monospace;
+
+  --max: 1120px;
+  --radius: 0.625rem;
+  --section-y: clamp(4.75rem, 10vw, 7.5rem);
+}
