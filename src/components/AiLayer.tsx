@@ -60,7 +60,8 @@ export function AiLayer() {
         <div className="ai-intro">
           <p className="eyebrow">{aiLayer.eyebrow}</p>
           <h2 className="section-title" id="ai-title">
-            The <em className="hl">unconscious layer</em> of your AI agents.
+            A <em className="hl">judgment layer</em> for AI agents and
+            employees.
           </h2>
           <p className="section-lead">{aiLayer.lead}</p>
         </div>

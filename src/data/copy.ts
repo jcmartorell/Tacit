@@ -146,9 +146,9 @@ export const dayZero = {
 };
 
 export const aiLayer = {
-  eyebrow: "For AI",
-  title: "The unconscious layer of your AI agents.",
-  lead: "AI only knows what's written down. Tacit fills the gap with how work actually gets done, so you can connect Claude or ChatGPT via MCP, feed your own agents, and still keep humans in the loop.",
+  eyebrow: "The vision",
+  title: "A judgment layer for AI agents and employees.",
+  lead: "The end goal is to build the judgment layer both AI agents and employees use — how work actually gets decided, not only what's written down. Tacit captures that unwritten know-how so people and agents can act with the same operational judgment.",
   connect: {
     label: "How you plug in",
     items: [
