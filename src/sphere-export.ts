@@ -14,7 +14,7 @@ type FrameSpec = {
 /** Still frames matching marketing canvas beats / layout keys. */
 const FRAMES: FrameSpec[] = [
   { id: "exploded", label: "Fig. — Scattered know-how", mode: "stage", stage: 0.85 },
-  { id: "ordered", label: "Fig. — Tacit finds order", mode: "stage", stage: 2.12 },
+  { id: "ordered", label: "Fig. — Delegate the right things", mode: "stage", stage: 2.12 },
   { id: "domains", label: "Fig. — Domains / segments", mode: "stage", stage: 3.1 },
   { id: "linked", label: "Fig. — Related knowledge linked", mode: "stage", stage: 3.55 },
   { id: "dayzero", label: "Fig. — Day one context", mode: "stage", stage: 4.85 },

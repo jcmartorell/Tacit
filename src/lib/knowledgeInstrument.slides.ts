@@ -2247,8 +2247,8 @@ export const STORY_BEATS: StoryBeat[] = [
   {
     min: 1.15,
     max: 2.15,
-    title: "Tacit finds order.",
-    body: "Passive capture from the tools you already use. Zero behavior change. Knowledge compounds instead of resetting.",
+    title: "Delegate the right things.",
+    body: "Routine lookups and known playbook steps go to the agent. Ambiguous calls stay with people.",
   },
   {
     min: 2.15,

@@ -1,6 +1,5 @@
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
-  AiBrain01Icon,
   ChartNetworkIcon,
   Plug01Icon,
   BotIcon,
@@ -15,7 +14,6 @@ const ICONS = {
   train: BotIcon,
   fuel: SparklesIcon,
   graph: ChartNetworkIcon,
-  delegate: AiBrain01Icon,
   hitl: UserCheck01Icon,
 } as const;
 
