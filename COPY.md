@@ -11,8 +11,8 @@ The knowledge behind the work.
 ## Hero
 
 - **Kicker:** For B2B companies
-- **Headline:** Make your clients' operations run better.
-- **Sub:** Tacit maps how clients really work, then helps you improve their operations while you optimize your own tech and communication through tacit knowledge.
+- **Headline:** Understand, transform, and automate your clients' operations.
+- **Sub:** Powered by the tacit knowledge inside your company and theirs.
 - **CTAs:** Book a diagnostic · See how it works
 
 ## Problem
