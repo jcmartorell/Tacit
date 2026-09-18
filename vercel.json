@@ -1,0 +1,8 @@
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "framework": null,
+  "redirects": [
+    { "source": "/old", "destination": "/", "permanent": false }
+  ]
+}

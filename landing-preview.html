@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Tacit — Make your clients' operations run better</title>
-<meta name="description" content="For B2B companies. Improve client operations while optimizing your own tech and communication through tacit knowledge." />
+<title>Tacit — Understand, transform, and automate your clients' operations</title>
+<meta name="description" content="Powered by the tacit knowledge inside your company and theirs." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
@@ -17,8 +17,9 @@
     --white: #FFFFFF;
     --line: rgba(24, 35, 46, 0.1);
     --pulse-tint: #EBF7F3;
-    --panel: rgba(255, 255, 255, 0.82);
-    --panel-strong: rgba(255, 255, 255, 0.92);
+    --panel: rgba(255, 255, 255, 0.42);
+    --panel-strong: rgba(255, 255, 255, 0.38);
+    --panel-soft: rgba(255, 255, 255, 0.32);
     --font-display: "Instrument Serif", Georgia, serif;
     --font: "DM Sans", system-ui, sans-serif;
     --max: 1040px;
@@ -45,6 +46,8 @@
     height: 100%;
     display: block;
     pointer-events: none;
+    will-change: transform;
+    transition: transform 0.4s var(--ease);
   }
   .page {
     position: relative;
@@ -62,9 +65,10 @@
     align-items: center;
     justify-content: space-between;
     padding: 18px clamp(20px, 4vw, 48px);
-    background: rgba(255, 255, 255, 0.78);
+    background: rgba(255, 255, 255, 0.28);
     border-bottom: 1px solid var(--line);
-    backdrop-filter: blur(12px);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
   }
   .brand { display: flex; align-items: center; gap: 10px; }
   .brand-name {
@@ -80,7 +84,7 @@
     border: 1px solid var(--line);
     padding: 9px 16px;
     border-radius: 6px;
-    background: rgba(255, 255, 255, 0.7);
+    background: rgba(255, 255, 255, 0.25);
     transition: border-color 160ms ease, background 160ms ease;
   }
   .nav-cta:hover {
@@ -105,7 +109,9 @@
     border-radius: 18px;
     background: var(--panel);
     border: 1px solid var(--line);
-    backdrop-filter: blur(8px);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 18px 48px rgba(24, 35, 46, 0.06);
   }
   .kicker {
     font-size: 12px;
@@ -121,7 +127,7 @@
     font-size: clamp(40px, 5.6vw, 60px);
     line-height: 1.08;
     letter-spacing: -0.03em;
-    max-width: 18ch;
+    max-width: 16ch;
     color: var(--ink);
   }
   .hero-sub {
@@ -152,7 +158,7 @@
   .btn-primary { background: var(--pulse); color: var(--white); }
   .btn-primary:hover { background: #168a68; }
   .btn-ghost {
-    background: rgba(255, 255, 255, 0.75);
+    background: rgba(255, 255, 255, 0.28);
     color: var(--ink);
     border-color: var(--line);
   }
@@ -178,7 +184,9 @@
     border-radius: 18px;
     background: var(--panel-strong);
     border: 1px solid var(--line);
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 16px 40px rgba(24, 35, 46, 0.05);
   }
   .eyebrow {
     font-size: 12px;
@@ -220,10 +228,18 @@
     .steps { grid-template-columns: repeat(3, 1fr); gap: 18px; }
   }
   .step {
-    background: rgba(255, 255, 255, 0.72);
+    background: var(--panel-soft);
     border: 1px solid var(--line);
     border-radius: 12px;
     padding: 22px 20px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: transform 280ms var(--ease), box-shadow 280ms var(--ease), border-color 280ms ease;
+  }
+  .step:hover {
+    transform: translateY(-6px);
+    border-color: rgba(26, 158, 120, 0.35);
+    box-shadow: 0 14px 32px rgba(24, 35, 46, 0.08);
   }
   .step-num {
     font-size: 12px;
@@ -247,7 +263,7 @@
     overflow-x: auto;
     border: 1px solid var(--line);
     border-radius: 12px;
-    background: rgba(255, 255, 255, 0.7);
+    background: var(--panel-strong);
   }
   table.contrast-table {
     width: 100%;
@@ -268,7 +284,7 @@
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--mist);
-    background: rgba(247, 245, 241, 0.85);
+    background: rgba(255, 255, 255, 0.35);
   }
   .contrast-table th:last-child { color: var(--pulse); }
   .contrast-table td:first-child { color: #667788; }
@@ -318,16 +334,48 @@
 
   .rise {
     opacity: 0;
-    transform: translateY(14px);
-    animation: rise 0.8s var(--ease) forwards;
+    transform: translateY(18px);
+    animation: rise 0.85s var(--ease) forwards;
   }
-  .rise-d1 { animation-delay: 0.06s; }
-  .rise-d2 { animation-delay: 0.14s; }
-  .rise-d3 { animation-delay: 0.22s; }
-  .rise-d4 { animation-delay: 0.3s; }
+  .rise-d1 { animation-delay: 0.08s; }
+  .rise-d2 { animation-delay: 0.16s; }
+  .rise-d3 { animation-delay: 0.24s; }
+  .rise-d4 { animation-delay: 0.32s; }
   @keyframes rise {
     to { opacity: 1; transform: translateY(0); }
   }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px) scale(0.985);
+    transition:
+      opacity 0.85s var(--ease),
+      transform 0.85s var(--ease);
+  }
+  .reveal.is-in {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  .reveal-d1 { transition-delay: 0.06s; }
+  .reveal-d2 { transition-delay: 0.14s; }
+  .reveal-d3 { transition-delay: 0.22s; }
+
+  .btn {
+    transition:
+      background 180ms ease,
+      border-color 180ms ease,
+      color 180ms ease,
+      transform 220ms var(--ease),
+      box-shadow 220ms var(--ease);
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(26, 158, 120, 0.28);
+  }
+  .btn-ghost {
+    background: var(--panel-soft);
+  }
+
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
     .rise, .rise-d1, .rise-d2, .rise-d3, .rise-d4 {
@@ -335,6 +383,13 @@
       transform: none;
       animation: none;
     }
+    .reveal, .reveal-d1, .reveal-d2, .reveal-d3 {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+    .step:hover, .btn-primary:hover { transform: none; box-shadow: none; }
+    .sphere-bg { animation: none; }
   }
 </style>
 </head>
@@ -372,7 +427,7 @@
     </header>
 
     <section class="section" id="problem" aria-labelledby="problem-title">
-      <div class="section-inner">
+      <div class="section-inner reveal">
         <p class="eyebrow">Problem</p>
         <h2 id="problem-title">New tools fail when habits stay the same.</h2>
         <p class="lede">Most tech projects stall because of people and habits, not bad software. If you do not see how work really moves, agents only speed up the mess.</p>
@@ -381,7 +436,7 @@
     </section>
 
     <section class="section" id="premise" aria-labelledby="premise-title">
-      <div class="section-inner">
+      <div class="section-inner reveal">
         <p class="eyebrow">What we do</p>
         <h2 id="premise-title">A clear picture first. Agents later.</h2>
         <p class="lede">Tacit maps real communication, tools in use, and company knowledge. That picture lets you change how teams work. After that, we add a judgment layer so agents act like your best people, not empty chatbots.</p>
@@ -389,21 +444,21 @@
     </section>
 
     <section class="section" id="how" aria-labelledby="how-title">
-      <div class="section-inner">
+      <div class="section-inner reveal">
         <p class="eyebrow">How it works</p>
         <h2 id="how-title">Three steps.</h2>
         <div class="steps">
-          <article class="step">
+          <article class="step reveal reveal-d1">
             <div class="step-num">01 · Map</div>
             <h3>See the real work</h3>
             <p>How people talk, what tools they use, who decides, and how information moves.</p>
           </article>
-          <article class="step">
+          <article class="step reveal reveal-d2">
             <div class="step-num">02 · Change</div>
             <h3>Fix habits and tools</h3>
             <p>Train teams, change how work happens, and install Tacit with the tools that fit.</p>
           </article>
-          <article class="step">
+          <article class="step reveal reveal-d3">
             <div class="step-num">03 · Automate</div>
             <h3>Agents with judgment</h3>
             <p>Automate with agents and assistants that carry the judgment of your best people.</p>
@@ -413,7 +468,7 @@
     </section>
 
     <section class="section" id="who" aria-labelledby="who-title">
-      <div class="section-inner">
+      <div class="section-inner reveal">
         <p class="eyebrow">Who it's for</p>
         <h2 id="who-title">Built for B2B operations.</h2>
         <p class="lede">Logistics, tech, and other B2B teams whose work depends on how the client operates. When you understand the client's processes and decisions, you can make their operation faster and yours stronger.</p>
@@ -422,7 +477,7 @@
     </section>
 
     <section class="section contrast" id="contrast" aria-labelledby="contrast-title">
-      <div class="section-inner">
+      <div class="section-inner reveal">
         <p class="eyebrow">Contrast</p>
         <h2 id="contrast-title">Usual path vs. Tacit</h2>
         <div class="table-wrap">
@@ -457,7 +512,7 @@
     </section>
 
     <section class="section close" id="close" aria-labelledby="close-title">
-      <div class="section-inner">
+      <div class="section-inner reveal">
         <h2 id="close-title">Start with how your own company tacitly works to optimize your clients' operations.</h2>
         <p class="lede">Book a diagnostic. Get the map. Then build tools and agents that fit.</p>
         <div class="cta-row">
@@ -480,10 +535,34 @@
     </section>
 
     <footer>
-      Live sphere background · KnowledgeInstrument · Edit copy in slides/landing/COPY.md
+      Scroll the sphere · chaos → graph → ordered · Edit copy in slides/landing-page-s-version/COPY.md
     </footer>
   </div>
 
   <script type="module" src="/src/landing-preview.ts"></script>
+  <script>
+    (() => {
+      const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const nodes = document.querySelectorAll(".reveal");
+      if (reduce || !("IntersectionObserver" in window)) {
+        nodes.forEach((n) => n.classList.add("is-in"));
+        return;
+      }
+      const io = new IntersectionObserver(
+        (entries) => {
+          for (const e of entries) {
+            if (e.isIntersecting) {
+              e.target.classList.add("is-in");
+              io.unobserve(e.target);
+            }
+          }
+        },
+        { threshold: 0.16, rootMargin: "0px 0px -8% 0px" },
+      );
+      nodes.forEach((n) => io.observe(n));
+
+      // Sphere morph (chaos → graph → ordered) is driven in landing-preview.ts
+    })();
+  </script>
 </body>
 </html>

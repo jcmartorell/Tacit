@@ -1,27 +1,568 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/tacit-mark.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="Capture knowledge from the tools your team already uses. Don't lose what was never written."
-    />
-    <title>Tacit — The knowledge behind the work.</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,400&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      href="https://assets.calendly.com/assets/external/widget.css"
-      rel="stylesheet"
-    />
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Tacit — Understand, transform, and automate your clients' operations</title>
+<meta name="description" content="Powered by the tacit knowledge inside your company and theirs." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+<style>
+  /* TACIT BRAND — white landing + live sphere bg (KnowledgeInstrument) */
+  :root {
+    --pulse: #1A9E78;
+    --ink: #18232E;
+    --mist: #6B7C8A;
+    --white: #FFFFFF;
+    --line: rgba(24, 35, 46, 0.1);
+    --pulse-tint: #EBF7F3;
+    --panel: rgba(255, 255, 255, 0.42);
+    --panel-strong: rgba(255, 255, 255, 0.38);
+    --panel-soft: rgba(255, 255, 255, 0.32);
+    --font-display: "Instrument Serif", Georgia, serif;
+    --font: "DM Sans", system-ui, sans-serif;
+    --max: 1040px;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--white);
+    color: var(--ink);
+    font-family: var(--font);
+    font-size: 17px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; text-decoration: none; }
+
+  #sphere-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    pointer-events: none;
+    will-change: transform;
+    transition: transform 0.4s var(--ease);
+  }
+  .page {
+    position: relative;
+    z-index: 1;
+  }
+
+  .mark { display: block; width: 28px; height: 28px; flex-shrink: 0; }
+  .mark-sm { width: 22px; height: 22px; }
+
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px clamp(20px, 4vw, 48px);
+    background: rgba(255, 255, 255, 0.28);
+    border-bottom: 1px solid var(--line);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .brand-name {
+    font-family: var(--font-display);
+    font-size: 26px;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+  }
+  .nav-cta {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+    border: 1px solid var(--line);
+    padding: 9px 16px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.25);
+    transition: border-color 160ms ease, background 160ms ease;
+  }
+  .nav-cta:hover {
+    border-color: var(--pulse);
+    background: var(--pulse-tint);
+  }
+
+  .hero {
+    min-height: min(92vh, 900px);
+    display: flex;
+    align-items: center;
+  }
+  .hero-inner {
+    width: 100%;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: clamp(56px, 8vw, 100px) clamp(20px, 4vw, 48px);
+  }
+  .hero-copy {
+    max-width: 36rem;
+    padding: 28px 28px 24px;
+    border-radius: 18px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 18px 48px rgba(24, 35, 46, 0.06);
+  }
+  .kicker {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--pulse);
+    margin-bottom: 18px;
+  }
+  .hero h1 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(40px, 5.6vw, 60px);
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+    max-width: 16ch;
+    color: var(--ink);
+  }
+  .hero-sub {
+    margin-top: 22px;
+    font-size: clamp(17px, 1.4vw, 19px);
+    line-height: 1.55;
+    color: #3f4d5a;
+  }
+  .cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 32px;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font);
+    font-size: 15px;
+    font-weight: 600;
+    padding: 13px 20px;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    transition: background 160ms ease, border-color 160ms ease, color 160ms ease;
+    cursor: pointer;
+  }
+  .btn-primary { background: var(--pulse); color: var(--white); }
+  .btn-primary:hover { background: #168a68; }
+  .btn-ghost {
+    background: rgba(255, 255, 255, 0.28);
+    color: var(--ink);
+    border-color: var(--line);
+  }
+  .btn-ghost:hover {
+    border-color: var(--pulse);
+    background: var(--pulse-tint);
+  }
+  .hero-tag {
+    margin-top: 28px;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 17px;
+    color: var(--mist);
+  }
+
+  .section {
+    padding: clamp(56px, 8vw, 88px) clamp(20px, 4vw, 48px);
+  }
+  .section-inner {
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: clamp(28px, 4vw, 40px);
+    border-radius: 18px;
+    background: var(--panel-strong);
+    border: 1px solid var(--line);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 16px 40px rgba(24, 35, 46, 0.05);
+  }
+  .eyebrow {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--pulse);
+    margin-bottom: 14px;
+  }
+  h2 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(30px, 3.8vw, 44px);
+    line-height: 1.12;
+    letter-spacing: -0.02em;
+    max-width: 20ch;
+    color: var(--ink);
+  }
+  .lede {
+    margin-top: 18px;
+    max-width: 38rem;
+    font-size: 17px;
+    color: #3f4d5a;
+  }
+  .closer-line {
+    margin-top: 22px;
+    font-family: var(--font-display);
+    font-size: 22px;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+
+  .steps {
+    display: grid;
+    gap: 16px;
+    margin-top: 36px;
+  }
+  @media (min-width: 800px) {
+    .steps { grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  }
+  .step {
+    background: var(--panel-soft);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 22px 20px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: transform 280ms var(--ease), box-shadow 280ms var(--ease), border-color 280ms ease;
+  }
+  .step:hover {
+    transform: translateY(-6px);
+    border-color: rgba(26, 158, 120, 0.35);
+    box-shadow: 0 14px 32px rgba(24, 35, 46, 0.08);
+  }
+  .step-num {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--pulse);
+    margin-bottom: 12px;
+  }
+  .step h3 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 24px;
+    letter-spacing: -0.02em;
+    margin-bottom: 10px;
+  }
+  .step p { color: #3f4d5a; font-size: 15px; }
+
+  .contrast h2 { margin-bottom: 28px; }
+  .table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--panel-strong);
+  }
+  table.contrast-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 15px;
+  }
+  .contrast-table th,
+  .contrast-table td {
+    text-align: left;
+    vertical-align: top;
+    padding: 16px 18px;
+    border-bottom: 1px solid var(--line);
+  }
+  .contrast-table tr:last-child td { border-bottom: none; }
+  .contrast-table th {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--mist);
+    background: rgba(255, 255, 255, 0.35);
+  }
+  .contrast-table th:last-child { color: var(--pulse); }
+  .contrast-table td:first-child { color: #667788; }
+  .contrast-table td:last-child { color: var(--ink); font-weight: 500; }
+
+  .close { text-align: center; }
+  .close .section-inner { background: var(--panel); }
+  .close h2 {
+    max-width: 22ch;
+    margin: 0 auto;
+    font-size: clamp(30px, 4vw, 46px);
+  }
+  .close .lede {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .close .cta-row { justify-content: center; }
+  .close-url {
+    display: inline-block;
+    margin-top: 28px;
+    font-size: 14px;
+    color: var(--mist);
+  }
+  .close-tag {
+    margin-top: 12px;
+    font-family: var(--font-display);
+    font-style: italic;
+    color: var(--mist);
+  }
+  .close-brand {
+    margin-top: 36px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-display);
+    font-size: 22px;
+  }
+
+  footer {
+    position: relative;
+    z-index: 1;
+    padding: 28px clamp(20px, 4vw, 48px) 40px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--mist);
+  }
+
+  .rise {
+    opacity: 0;
+    transform: translateY(18px);
+    animation: rise 0.85s var(--ease) forwards;
+  }
+  .rise-d1 { animation-delay: 0.08s; }
+  .rise-d2 { animation-delay: 0.16s; }
+  .rise-d3 { animation-delay: 0.24s; }
+  .rise-d4 { animation-delay: 0.32s; }
+  @keyframes rise {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px) scale(0.985);
+    transition:
+      opacity 0.85s var(--ease),
+      transform 0.85s var(--ease);
+  }
+  .reveal.is-in {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  .reveal-d1 { transition-delay: 0.06s; }
+  .reveal-d2 { transition-delay: 0.14s; }
+  .reveal-d3 { transition-delay: 0.22s; }
+
+  .btn {
+    transition:
+      background 180ms ease,
+      border-color 180ms ease,
+      color 180ms ease,
+      transform 220ms var(--ease),
+      box-shadow 220ms var(--ease);
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(26, 158, 120, 0.28);
+  }
+  .btn-ghost {
+    background: var(--panel-soft);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .rise, .rise-d1, .rise-d2, .rise-d3, .rise-d4 {
+      opacity: 1;
+      transform: none;
+      animation: none;
+    }
+    .reveal, .reveal-d1, .reveal-d2, .reveal-d3 {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+    .step:hover, .btn-primary:hover { transform: none; box-shadow: none; }
+    .sphere-bg { animation: none; }
+  }
+</style>
+</head>
+<body>
+  <canvas id="sphere-bg" aria-hidden="true"></canvas>
+
+  <div class="page">
+    <nav class="nav" aria-label="Primary">
+      <a class="brand" href="#top">
+        <svg class="mark" viewBox="0 0 100 100" role="img" aria-label="Tacit">
+          <line x1="50" y1="84" x2="50" y2="48" stroke="#1A9E78" stroke-width="2.8" stroke-linecap="round"/>
+          <line x1="50" y1="48" x2="20" y2="18" stroke="#1A9E78" stroke-width="2.8" stroke-linecap="round"/>
+          <line x1="50" y1="48" x2="80" y2="18" stroke="#1A9E78" stroke-width="2.8" stroke-linecap="round"/>
+          <line x1="8"  y1="18" x2="32" y2="18" stroke="#1A9E78" stroke-width="2.8" stroke-linecap="round"/>
+          <line x1="68" y1="18" x2="92" y2="18" stroke="#1A9E78" stroke-width="2.8" stroke-linecap="round"/>
+        </svg>
+        <span class="brand-name">Tacit</span>
+      </a>
+      <a class="nav-cta" href="#close">Book a diagnostic</a>
+    </nav>
+
+    <header class="hero" id="top">
+      <div class="hero-inner">
+        <div class="hero-copy">
+          <p class="kicker rise">For B2B companies</p>
+          <h1 class="rise rise-d1">Understand, transform, and automate your clients' operations.</h1>
+          <p class="hero-sub rise rise-d2">Powered by the tacit knowledge inside your company and theirs.</p>
+          <div class="cta-row rise rise-d3">
+            <a class="btn btn-primary" href="#close">Book a diagnostic</a>
+            <a class="btn btn-ghost" href="#how">See how it works</a>
+          </div>
+          <p class="hero-tag rise rise-d4">The knowledge behind the work.</p>
+        </div>
+      </div>
+    </header>
+
+    <section class="section" id="problem" aria-labelledby="problem-title">
+      <div class="section-inner reveal">
+        <p class="eyebrow">Problem</p>
+        <h2 id="problem-title">New tools fail when habits stay the same.</h2>
+        <p class="lede">Most tech projects stall because of people and habits, not bad software. If you do not see how work really moves, agents only speed up the mess.</p>
+        <p class="closer-line">See the culture before you automate.</p>
+      </div>
+    </section>
+
+    <section class="section" id="premise" aria-labelledby="premise-title">
+      <div class="section-inner reveal">
+        <p class="eyebrow">What we do</p>
+        <h2 id="premise-title">A clear picture first. Agents later.</h2>
+        <p class="lede">Tacit maps real communication, tools in use, and company knowledge. That picture lets you change how teams work. After that, we add a judgment layer so agents act like your best people, not empty chatbots.</p>
+      </div>
+    </section>
+
+    <section class="section" id="how" aria-labelledby="how-title">
+      <div class="section-inner reveal">
+        <p class="eyebrow">How it works</p>
+        <h2 id="how-title">Three steps.</h2>
+        <div class="steps">
+          <article class="step reveal reveal-d1">
+            <div class="step-num">01 · Map</div>
+            <h3>See the real work</h3>
+            <p>How people talk, what tools they use, who decides, and how information moves.</p>
+          </article>
+          <article class="step reveal reveal-d2">
+            <div class="step-num">02 · Change</div>
+            <h3>Fix habits and tools</h3>
+            <p>Train teams, change how work happens, and install Tacit with the tools that fit.</p>
+          </article>
+          <article class="step reveal reveal-d3">
+            <div class="step-num">03 · Automate</div>
+            <h3>Agents with judgment</h3>
+            <p>Automate with agents and assistants that carry the judgment of your best people.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="who" aria-labelledby="who-title">
+      <div class="section-inner reveal">
+        <p class="eyebrow">Who it's for</p>
+        <h2 id="who-title">Built for B2B operations.</h2>
+        <p class="lede">Logistics, tech, and other B2B teams whose work depends on how the client operates. When you understand the client's processes and decisions, you can make their operation faster and yours stronger.</p>
+        <p class="closer-line">Client efficiency is the goal. Yours improves with it.</p>
+      </div>
+    </section>
+
+    <section class="section contrast" id="contrast" aria-labelledby="contrast-title">
+      <div class="section-inner reveal">
+        <p class="eyebrow">Contrast</p>
+        <h2 id="contrast-title">Usual path vs. Tacit</h2>
+        <div class="table-wrap">
+          <table class="contrast-table">
+            <thead>
+              <tr>
+                <th scope="col">Usual path</th>
+                <th scope="col">With Tacit</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Buy tools / agents first</td>
+                <td>Map how work really happens first</td>
+              </tr>
+              <tr>
+                <td>Trust the org chart</td>
+                <td>See real communication and tools</td>
+              </tr>
+              <tr>
+                <td>Blame the software</td>
+                <td>Fix habits, then automate</td>
+              </tr>
+              <tr>
+                <td>Guess how the client works</td>
+                <td>Know their flow, then optimize it</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="section close" id="close" aria-labelledby="close-title">
+      <div class="section-inner reveal">
+        <h2 id="close-title">Start with how your own company tacitly works to optimize your clients' operations.</h2>
+        <p class="lede">Book a diagnostic. Get the map. Then build tools and agents that fit.</p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="mailto:sales@tacit.guru?subject=Book%20a%20diagnostic">Book a diagnostic</a>
+          <a class="btn btn-ghost" href="https://tacit.guru">tacit.guru</a>
+        </div>
+        <a class="close-url" href="https://tacit.guru">tacit.guru</a>
+        <p class="close-tag">The knowledge behind the work.</p>
+        <div class="close-brand">
+          <svg class="mark mark-sm" viewBox="0 0 100 100" aria-hidden="true">
+            <line x1="50" y1="84" x2="50" y2="48" stroke="#1A9E78" stroke-width="2.8" stroke-linecap="round"/>
+            <line x1="50" y1="48" x2="20" y2="18" stroke="#1A9E78" stroke-width="2.8" stroke-linecap="round"/>
+            <line x1="50" y1="48" x2="80" y2="18" stroke="#1A9E78" stroke-width="2.8" stroke-linecap="round"/>
+            <line x1="8"  y1="18" x2="32" y2="18" stroke="#1A9E78" stroke-width="2.8" stroke-linecap="round"/>
+            <line x1="68" y1="18" x2="92" y2="18" stroke="#1A9E78" stroke-width="2.8" stroke-linecap="round"/>
+          </svg>
+          <span>Tacit</span>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      Scroll the sphere · chaos → graph → ordered · Edit copy in slides/landing-page-s-version/COPY.md
+    </footer>
+  </div>
+
+  <script type="module" src="/src/landing-preview.ts"></script>
+  <script>
+    (() => {
+      const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const nodes = document.querySelectorAll(".reveal");
+      if (reduce || !("IntersectionObserver" in window)) {
+        nodes.forEach((n) => n.classList.add("is-in"));
+        return;
+      }
+      const io = new IntersectionObserver(
+        (entries) => {
+          for (const e of entries) {
+            if (e.isIntersecting) {
+              e.target.classList.add("is-in");
+              io.unobserve(e.target);
+            }
+          }
+        },
+        { threshold: 0.16, rootMargin: "0px 0px -8% 0px" },
+      );
+      nodes.forEach((n) => io.observe(n));
+
+      // Sphere morph (chaos → graph → ordered) is driven in landing-preview.ts
+    })();
+  </script>
+</body>
 </html>
