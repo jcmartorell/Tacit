@@ -17,7 +17,7 @@ The knowledge behind the work.
 
 ## Problem
 
-**Title:** New tools fail when habits stay the same.
+**Title:** New tools fail when workflows stay the same.
 
 **Body:** Most tech projects stall because of people and habits, not bad software. If you do not see how work really moves, agents only speed up the mess.
 
