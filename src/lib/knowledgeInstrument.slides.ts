@@ -830,8 +830,8 @@ export class KnowledgeInstrument {
     const ctx = this.ctx;
     ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
     ctx.clearRect(0, 0, this.W, this.H);
-    if (this.debug.surface === "sand") {
-      ctx.fillStyle = "#F4EFE6";
+    if (this.isLightSurface()) {
+      ctx.fillStyle = this.surfaceFill();
       ctx.fillRect(0, 0, this.W, this.H);
     }
 
@@ -1021,7 +1021,7 @@ export class KnowledgeInstrument {
   }
 
   private surfaceTheme() {
-    return this.debug.surface === "sand" ? 1 : 0;
+    return this.isLightSurface() ? 1 : 0;
   }
 
   private drawConsumingAgents(
@@ -1969,13 +1969,23 @@ export class KnowledgeInstrument {
     radiusScale: 1,
     /** Meteor trail count + spawn speed (1–4×). */
     meteorDensity: 2,
-    /** Force Ink (0) or Sand (1) surface; null = stage-driven theme. */
-    surface: "ink" as "ink" | "sand",
+    /** Force Ink (0), Sand cream, or White surface. */
+    surface: "ink" as "ink" | "sand" | "white",
     /** Agent / exploded-segment satellite count. */
     satelliteCount: 28,
     /** Sand stills: every particle/edge is dark grey (Team / Ask). */
     greySand: false,
   };
+
+  private isLightSurface(): boolean {
+    return this.debug.surface === "sand" || this.debug.surface === "white";
+  }
+
+  private surfaceFill(): string {
+    if (this.debug.surface === "white") return "#FFFFFF";
+    if (this.debug.surface === "sand") return "#F4EFE6";
+    return "#18232E";
+  }
 
   private sandGrey(depth: number): [number, number, number] {
     const t = 0.62 + 0.38 * clamp01(depth);
@@ -2036,13 +2046,13 @@ export class KnowledgeInstrument {
 
     ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
     ctx.clearRect(0, 0, this.W, this.H);
-    if (this.debug.surface === "sand") {
-      ctx.fillStyle = "#F4EFE6";
+    if (this.isLightSurface()) {
+      ctx.fillStyle = this.surfaceFill();
       ctx.fillRect(0, 0, this.W, this.H);
     }
 
     const theme =
-      this.debug.surface === "sand"
+      this.isLightSurface()
         ? 1
         : this.debug.surface === "ink"
           ? 0

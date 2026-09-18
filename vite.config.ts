@@ -14,6 +14,7 @@ export default defineConfig({
         sphereExport: resolve(root, "sphere-export.html"),
         sphereExportSlides: resolve(root, "sphere-export-slides.html"),
         spherePreviewSlides: resolve(root, "sphere-preview-slides.html"),
+        landingPreview: resolve(root, "landing-preview.html"),
       },
     },
   },
